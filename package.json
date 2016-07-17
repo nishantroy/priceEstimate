@@ -28,6 +28,10 @@
       "platform": "ios",
       "version": "",
       "locator": "ios"
+    },
+    {
+      "platform": "android",
+      "locator": "browser"
     }
   ]
 }
