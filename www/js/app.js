@@ -33,8 +33,7 @@ angular.module('starter', ['ionic'])
 
       .state('homePage', {
         url: '/',
-        templateUrl: 'index.html',
-        controller: 'HomeCtrl'
+        templateUrl: 'index.html'
       });
 
     $urlRouterProvider.otherwise('/');
@@ -48,6 +47,7 @@ angular.module('starter', ['ionic'])
     var uberClientID = 'WffoDdDVenbVGpKBQvIR8U0WXV9kVppo';
     var uberServerToken = 'fZuWxpEbJJIjryfMfaupBDXYxUB1ebV09vBY5lhf';
     var googleAPIKey = 'AIzaSyDxZN7Mqb17tRIJvvq3D5_fB8zdzP9dRzg';
+    $scope.prices = this;
 
     $scope.initAutocomplete = function () {
       // Create the autocomplete object, restricting the search to geographical
@@ -82,17 +82,23 @@ angular.module('starter', ['ionic'])
         navigator.geolocation.getCurrentPosition(function (position) {
           $scope.startLat = position.coords.latitude;
           $scope.startLong = position.coords.longitude;
+          console.log("Starting position found!")
         });
       }
     };
+
+    var prices = this;
 
     $scope.getPrice = function () {
       var url = 'https://api.uber.com/v1/estimates/price?';
       var xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
-          var myArr = JSON.parse(xhr.responseText);
-          console.log(myArr);
+          var data = JSON.parse(xhr.responseText);
+          console.log(data);
+          prices.data = data.prices;
+          console.log(prices.data);
+          $scope.$apply();
         }
       };
       xhr.open('GET', url+'start_latitude='+$scope.startLat+'&start_longitude='+$scope.startLong
@@ -101,20 +107,6 @@ angular.module('starter', ['ionic'])
       xhr.withCredentials = false;
       xhr.send();
 
-
-
-      // var params = {
-      //   server_token: serverToken,
-      //   start_latitude: $scope.startLat,
-      //   start_longitude: $scope.startLong,
-      //   end_latitude: $scope.destLatitude,
-      //   end_longitude: $scope.destLongitude,
-      //   seat_count: 1
-      // };
-      //
-      // $http.get(url, params).then(function (data) {
-      //   console.log(data);
-      // });
     }
 
   });

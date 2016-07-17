@@ -19,7 +19,6 @@
   <script src="https://www.gstatic.com/firebasejs/3.2.0/firebase.js"></script>
 
 
-
   <script type="text/javascript"
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxZN7Mqb17tRIJvvq3D5_fB8zdzP9dRzg&libraries=places"
           async defer>
@@ -57,10 +56,24 @@
       </button>
 
       <div class="buttonUber">
-        <p id="time">ESTIMATING PRICE </p>
+        <!--<p id="time">ESTIMATING PRICE </p>-->
       </div>
 
     </center>
+
+    <div class="row header">
+      <div class="col">Type</div>
+      <div class="col">Time</div>
+      <div class="col">Price Estimate</div>
+      <div class="col">Surge Multiplier</div>
+    </div>
+    <div class="row" ng-repeat="price in prices.data">
+      <div class="col">{{price.display_name}}</div>
+      <div class="col">{{price.duration / 60}} minutes</div>
+      <div class="col">LK {{price.estimate}}</div>
+      <div class="col">{{price.surge_multiplier}}</div>
+    </div>
+
   </ion-content>
 </ion-pane>
 </body>
