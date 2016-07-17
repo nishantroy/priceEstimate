@@ -134,7 +134,7 @@ angular.module('starter', ['ionic'])
         var reqPrices = {
           method: 'GET',
           url: 'https://api.lyft.com/v1/cost',
-          headers: {"Content-Type":'application/json', Authorization: 'bearer ' + window.btoa(lyftClientID+":"+lyftClientSecret)},
+          headers: {"Content-Type":'application/json', Authorization: 'bearer ' + window.btoa($scope.lyftAccessToken)},
           data: {'grant_type':'client_credentials','scope':'public'}
         };
 
@@ -142,9 +142,9 @@ angular.module('starter', ['ionic'])
           console.log(dat2);
         });
 
-        lyftXHR.setRequestHeader("Authorization", "bearer " + $scope.lyftAccessToken);
-        // lyftXHR.withCredentials = false;
-        lyftXHR.send();
+        // lyftXHR.setRequestHeader("Authorization", "Bearer " + $scope.lyftAccessToken);
+        // // lyftXHR.withCredentials = false;
+        // lyftXHR.send();
       });
 
 
