@@ -51,11 +51,16 @@
 
     </section>
     <center>
-      <button class="button button-dark" ng-click="getPrice()">
+      <button class="button button-dark" ng-click="getUberPrice()">
         <i class="icon ion-model-s"></i>
         Find Ride Prices
       </button>
 
+
+      <button class="button button-dark" ng-click="showData()">
+
+        Show Data
+      </button>
       <div class="buttonUber">
         <!--<p id="time">ESTIMATING PRICE </p>-->
       </div>
@@ -68,15 +73,29 @@
       <div class="col">Price Estimate</div>
       <div class="col">Surge Multiplier</div>
     </div>
-    <div class="row" ng-repeat="price in prices.data">
+    <div class="row" ng-repeat="price in uberPrices.data">
       <div class="col">{{price.display_name}}</div>
       <div class="col">{{price.duration / 60}} minutes</div>
       <div class="col">{{price.estimate}}</div>
-      <div class="col">{{price.surge_multiplier}}</div>
+      <div class="col">{{price.surge_multiplier}}x</div>
     </div>
 
-    <div class="buttonLyft">
+    <br> <br>
+    <div class="buttonLyft" ng-click="getLyftPrice()">
       <!--<p id="time">ESTIMATING PRICE </p>-->
+    </div>
+
+    <div class="row header">
+      <div class="col">Type</div>
+      <div class="col">Time</div>
+      <div class="col">Price Estimate</div>
+      <div class="col">Surge Multiplier</div>
+    </div>
+    <div class="row" ng-repeat="lyft in lyftPrices.data">
+      <div class="col">{{lyft.display_name}}</div>
+      <div class="col">{{Math.ceil(lyft.estimated_duration_seconds / 60)}} minutes</div>
+      <div class="col">${{lyft.estimated_cost_cents_min/100}} - {{lyft.estimated_cost_cents_max/100}}</div>
+      <div class="col">{{lyft.primetime_percentage}}</div>
     </div>
 
   </ion-content>

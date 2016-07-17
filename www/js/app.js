@@ -49,7 +49,12 @@ angular.module('starter', ['ionic'])
     var googleAPIKey = 'AIzaSyDxZN7Mqb17tRIJvvq3D5_fB8zdzP9dRzg';
     var lyftClientID = 'gu3W6ada71Da';
     var lyftClientSecret = 'Etbv-4-4MtIbRhwX3yHgG7TwLhrJ-wU5';
-    $scope.prices = this;
+    $scope.uberPrices = {};
+    $scope.lyftPrices = {};
+
+    $scope.Math = window.Math;
+
+
 
     $scope.initAutocomplete = function () {
       // Create the autocomplete object, restricting the search to geographical
@@ -65,7 +70,7 @@ angular.module('starter', ['ionic'])
     $scope.addressSelected = function () {
       var url = 'https://maps.googleapis.com/maps/api/geocode/json?address='
         + document.getElementById('autocomplete').value
-        + '&key='+googleAPIKey;
+        + '&key=' + googleAPIKey;
       console.log(url);
 
       $http.get(url)
@@ -90,57 +95,66 @@ angular.module('starter', ['ionic'])
       }
     };
 
-    var prices = this;
 
-    $scope.getPrice = function () {
+    $scope.getUberPrice = function () {
       var url = 'https://api.uber.com/v1/estimates/price?';
       var uberXHR = new XMLHttpRequest();
-      uberXHR.onreadystatechange = function() {
-        if (uberXHR.readyState == 4 && uberXHR.status == 200) {
+
+      uberXHR.onreadystatechange = function () {
+        if (uberXHR.readyState == XMLHttpRequest.DONE) {
           var data = JSON.parse(uberXHR.responseText);
           console.log(data);
-          prices.data = data.prices;
-          console.log(prices.data);
-          $scope.$apply();
+          $scope.uberPrices.data = data.prices;
+          console.log($scope.uberPrices.data);
         }
       };
-      uberXHR.open('GET', url+'start_latitude='+$scope.startLat+'&start_longitude='+$scope.startLong
-        +'&end_latitude='+$scope.destLatitude+'&end_longitude='+$scope.destLongitude+'&seat_count=1');
+      uberXHR.open('GET', url + 'start_latitude=' + $scope.startLat + '&start_longitude=' + $scope.startLong
+        + '&end_latitude=' + $scope.destLatitude + '&end_longitude=' + $scope.destLongitude + '&seat_count=1', false);
       uberXHR.setRequestHeader("Authorization", "Token " + uberServerToken);
       uberXHR.withCredentials = false;
       uberXHR.send();
 
-      var lyftXHR = new XMLHttpRequest();
 
+      // $scope.lyftPrices;
       var req = {
         method: 'POST',
         url: 'https://api.lyft.com/oauth/token',
-        headers: {"Content-Type":'application/json', Authorization: 'Basic ' + window.btoa(lyftClientID+":"+lyftClientSecret)},
-        data: {'grant_type':'client_credentials','scope':'public'}
+        headers: {
+          "Content-Type": 'application/json',
+          Authorization: 'Basic ' + window.btoa(lyftClientID + ":" + lyftClientSecret)
+        },
+        data: {'grant_type': 'client_credentials', 'scope': 'public'}
       };
       $http(req).then(function (data) {
-        $scope.lyftAccessToken = data.data.access_token;
-      
-        //   }
+        var lyftAccessToken = data.data.access_token;
+        console.log(lyftAccessToken);
 
-        var reqPrices = {
-          method: 'GET',
-          url: 'https://api.lyft.com/v1/cost',
-          headers: {"Content-Type":'application/json', Authorization: 'bearer ' + window.btoa(lyftClientID+":"+lyftClientSecret)},
-          data: {'grant_type':'client_credentials','scope':'public'}
+        var lyftXHR = new XMLHttpRequest();
+
+        lyftXHR.onreadystatechange = function () {
+          if (lyftXHR.readyState == XMLHttpRequest.DONE) {
+            var lyftData = JSON.parse(lyftXHR.responseText);
+            console.log(lyftData);
+            $scope.lyftPrices.data = lyftData.cost_estimates;
+            console.log($scope.lyftPrices.data);
+          }
         };
+        lyftXHR.open('GET', 'https://api.lyft.com/v1/cost?start_lat=' + $scope.startLat + '&start_lng=' + $scope.startLong
+          + '&end_lat=' + $scope.destLatitude + '&end_lng=' + $scope.destLongitude, false);
+        lyftXHR.setRequestHeader("Authorization", "bearer " + lyftAccessToken);
+        lyftXHR.withCredentials = false;
+        lyftXHR.send();
 
-        $http(reqPrices).then(function (dat2) {
-          console.log(dat2);
-        });
-
-        // lyftXHR.setRequestHeader("Authorization", "bearer " + $scope.lyftAccessToken);
-        // lyftXHR.withCredentials = false;
-        // lyftXHR.send();
       });
 
 
+    };
+
+    $scope.showData = function () {
+      console.log("Uber: " + uberPrices.data);
+      console.log("Lyft: " + lyftPrices.data);
 
     }
+
 
   });
