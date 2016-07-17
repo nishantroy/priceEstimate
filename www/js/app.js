@@ -120,15 +120,7 @@ angular.module('starter', ['ionic'])
       };
       $http(req).then(function (data) {
         $scope.lyftAccessToken = data.data.access_token;
-        // lyftXHR.open('GET', 'https://api.lyft.com/v1/cost/'+'start_lat='+$scope.startLat+'&start_lng='+$scope.startLong
-        //   +'&end_lat='+$scope.destLatitude+'&end_lng='+$scope.destLongitude);
-        // lyftXHR.onreadystatechange = function() {
-        //   if (lyftXHR.readyState == 4 && lyftXHR.status == 200) {
-        //     var data = JSON.parse(lyftXHR.responseText);
-        //     console.log(data);
-        //     prices.data = data.prices;
-        //     console.log(prices.data);
-        //     $scope.$apply();
+      
         //   }
 
         var reqPrices = {
@@ -142,9 +134,9 @@ angular.module('starter', ['ionic'])
           console.log(dat2);
         });
 
-        lyftXHR.setRequestHeader("Authorization", "bearer " + $scope.lyftAccessToken);
+        // lyftXHR.setRequestHeader("Authorization", "bearer " + $scope.lyftAccessToken);
         // lyftXHR.withCredentials = false;
-        lyftXHR.send();
+        // lyftXHR.send();
       });
 
 
