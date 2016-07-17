@@ -30,6 +30,15 @@ section {
   opacity: 1;
 }
 
+.buttonLyft {
+  background-image: url('../img/lyft_50px.png');
+  background-size: contain;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto;
+  opacity: 1;
+}
+
 #time {
   text-align: right;
   margin-top: 2%;

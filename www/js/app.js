@@ -47,6 +47,7 @@ angular.module('starter', ['ionic'])
     var uberClientID = 'WffoDdDVenbVGpKBQvIR8U0WXV9kVppo';
     var uberServerToken = 'fZuWxpEbJJIjryfMfaupBDXYxUB1ebV09vBY5lhf';
     var googleAPIKey = 'AIzaSyDxZN7Mqb17tRIJvvq3D5_fB8zdzP9dRzg';
+    var lyftClientID = 'gu3W6ada71Da';
     $scope.prices = this;
 
     $scope.initAutocomplete = function () {
@@ -92,21 +93,32 @@ angular.module('starter', ['ionic'])
 
     $scope.getPrice = function () {
       var url = 'https://api.uber.com/v1/estimates/price?';
-      var xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-          var data = JSON.parse(xhr.responseText);
+      var uberXHR = new XMLHttpRequest();
+      uberXHR.onreadystatechange = function() {
+        if (uberXHR.readyState == 4 && uberXHR.status == 200) {
+          var data = JSON.parse(uberXHR.responseText);
           console.log(data);
-          prices.data = data.prices;
-          console.log(prices.data);
+          uberPrices.data = data.prices;
+          console.log(uberPrices.data);
           $scope.$apply();
         }
       };
-      xhr.open('GET', url+'start_latitude='+$scope.startLat+'&start_longitude='+$scope.startLong
+      uberXHR.open('GET', url+'start_latitude='+$scope.startLat+'&start_longitude='+$scope.startLong
         +'&end_latitude='+$scope.destLatitude+'&end_longitude='+$scope.destLongitude+'&seat_count=1');
-      xhr.setRequestHeader("Authorization", "Token " + uberServerToken);
-      xhr.withCredentials = false;
-      xhr.send();
+      uberXHR.setRequestHeader("Authorization", "Token " + uberServerToken);
+      uberXHR.withCredentials = false;
+      uberXHR.send();
+
+      var lyftXHR = new XMLHttpRequest();
+
+      var lyftURL = 'https://api.lyft.com/v1/cost'+'start_latitude='+$scope.startLat+'&start_longitude='+$scope.startLong
+        +'&end_latitude='+$scope.destLatitude+'&end_longitude='+$scope.destLongitude;
+
+      console.log(lyftURL);
+
+      lyftXHR.open('GET', 'https://api.lyft.com/v1/cost'+'start_latitude='+$scope.startLat+'&start_longitude='+$scope.startLong
+        +'&end_latitude='+$scope.destLatitude+'&end_longitude='+$scope.destLongitude);
+      lyftXHR.setRequestHeader("Authorization", "Token " + lyftClientID );
 
     }
 
