@@ -48,6 +48,7 @@ angular.module('starter', ['ionic'])
     var uberServerToken = 'fZuWxpEbJJIjryfMfaupBDXYxUB1ebV09vBY5lhf';
     var googleAPIKey = 'AIzaSyDxZN7Mqb17tRIJvvq3D5_fB8zdzP9dRzg';
     var lyftClientID = 'gu3W6ada71Da';
+    var lyftClientSecret = 'Etbv-4-4MtIbRhwX3yHgG7TwLhrJ-wU5';
     $scope.prices = this;
 
     $scope.initAutocomplete = function () {
@@ -98,8 +99,8 @@ angular.module('starter', ['ionic'])
         if (uberXHR.readyState == 4 && uberXHR.status == 200) {
           var data = JSON.parse(uberXHR.responseText);
           console.log(data);
-          uberPrices.data = data.prices;
-          console.log(uberPrices.data);
+          prices.data = data.prices;
+          console.log(prices.data);
           $scope.$apply();
         }
       };
@@ -111,14 +112,42 @@ angular.module('starter', ['ionic'])
 
       var lyftXHR = new XMLHttpRequest();
 
-      var lyftURL = 'https://api.lyft.com/v1/cost'+'start_latitude='+$scope.startLat+'&start_longitude='+$scope.startLong
-        +'&end_latitude='+$scope.destLatitude+'&end_longitude='+$scope.destLongitude;
+      var req = {
+        method: 'POST',
+        url: 'https://api.lyft.com/oauth/token',
+        headers: {"Content-Type":'application/json', Authorization: 'Basic ' + window.btoa(lyftClientID+":"+lyftClientSecret)},
+        data: {'grant_type':'client_credentials','scope':'public'}
+      };
+      $http(req).then(function (data) {
+        $scope.lyftAccessToken = data.data.access_token;
+        // lyftXHR.open('GET', 'https://api.lyft.com/v1/cost/'+'start_lat='+$scope.startLat+'&start_lng='+$scope.startLong
+        //   +'&end_lat='+$scope.destLatitude+'&end_lng='+$scope.destLongitude);
+        // lyftXHR.onreadystatechange = function() {
+        //   if (lyftXHR.readyState == 4 && lyftXHR.status == 200) {
+        //     var data = JSON.parse(lyftXHR.responseText);
+        //     console.log(data);
+        //     prices.data = data.prices;
+        //     console.log(prices.data);
+        //     $scope.$apply();
+        //   }
 
-      console.log(lyftURL);
+        var reqPrices = {
+          method: 'GET',
+          url: 'https://api.lyft.com/v1/cost',
+          headers: {"Content-Type":'application/json', Authorization: 'bearer ' + window.btoa(lyftClientID+":"+lyftClientSecret)},
+          data: {'grant_type':'client_credentials','scope':'public'}
+        };
 
-      lyftXHR.open('GET', 'https://api.lyft.com/v1/cost'+'start_latitude='+$scope.startLat+'&start_longitude='+$scope.startLong
-        +'&end_latitude='+$scope.destLatitude+'&end_longitude='+$scope.destLongitude);
-      lyftXHR.setRequestHeader("Authorization", "Token " + lyftClientID );
+        $http(reqPrices).then(function (dat2) {
+          console.log(dat2);
+        });
+
+        lyftXHR.setRequestHeader("Authorization", "bearer " + $scope.lyftAccessToken);
+        // lyftXHR.withCredentials = false;
+        lyftXHR.send();
+      });
+
+
 
     }
 
