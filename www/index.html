@@ -43,7 +43,7 @@
   </ion-header-bar>
   <ion-content ng-controller="HomeCtrl">
     <section ng-init="initAutocomplete()">
-      <input id="autocomplete" placeholder="Enter your destination" ng-focus="geolocate()"
+      <input id="autocomplete" placeholder="Enter your destination"
              type="text">
       <br>
 
@@ -70,7 +70,7 @@
     <div class="row" ng-repeat="price in prices.data">
       <div class="col">{{price.display_name}}</div>
       <div class="col">{{price.duration / 60}} minutes</div>
-      <div class="col">LK {{price.estimate}}</div>
+      <div class="col">{{price.estimate}}</div>
       <div class="col">{{price.surge_multiplier}}</div>
     </div>
 

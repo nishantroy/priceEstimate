@@ -56,6 +56,7 @@ angular.module('starter', ['ionic'])
         (document.getElementById('autocomplete')),
         {types: ['geocode']});
       autocomplete.addListener('place_changed', $scope.addressSelected);
+      $scope.geolocate();
 
     };
 
